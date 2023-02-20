@@ -181,7 +181,7 @@ return [
                 'adapter' => 'uri',
             ],
             'resource' => [
-                'label' => 'Omeka resource (by ID)', // @translate
+                'label' => 'Omeka resource', // @translate
                 'adapter' => 'resource',
             ],
         ],
@@ -199,7 +199,7 @@ return [
             'csv_import_multivalue_separator' => ',',
             'csv_import_rows_by_batch' => 20,
             'csv_import_global_language' => '',
-            'csv_import_identifier_property' => '',
+            'csv_import_identifier_property' => 'dcterms:identifier',
             'csv_import_automap_check_names_alone' => false,
         ],
     ],

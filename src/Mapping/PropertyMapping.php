@@ -1,16 +1,49 @@
 <?php
 namespace CSVImport\Mapping;
 
-use Laminas\View\Renderer\PhpRenderer;
+// Modifications to standard distro made in DKM resource linking.  
+use CSVImport\Mvc\Controller\Plugin\FindResourcesFromIdentifiers;
+use Omeka\Stdlib\Message;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\View\Renderer\PhpRenderer;
 
 class PropertyMapping extends AbstractMapping
 {
     protected $label = 'Properties'; // @translate
     protected $name = 'property-selector';
 
+    /**
+     * @var FindResourcesFromIdentifiers
+     */
+    protected $findResourceFromIdentifier;
+
+    /**
+     * @var int|string
+     */
+    protected $propertyIdentifier;
+
     public function getSidebar(PhpRenderer $view)
     {
         return $view->csvPropertySelector($view->translate('Properties'), false);
+    }
+
+    public function init(array $args, ServiceLocatorInterface $serviceLocator)
+    {
+        parent::init($args, $serviceLocator);
+        $this->findResourceFromIdentifier = $serviceLocator->get('ControllerPluginManager')
+            ->get('findResourceFromIdentifier');
+
+        // The main identifier property may be used as term or as id in some
+        // places, so prepare it one time only.
+        if (empty($args['identifier_property']) || $args['identifier_property'] === 'internal_id') {
+            $this->propertyIdentifier = 'internal_id';
+        } elseif (is_numeric($args['identifier_property'])) {
+            $this->propertyIdentifier = (int) $args['identifier_property'];
+        } else {
+            $result = $this->api
+                ->searchOne('properties', ['term' => $args['identifier_property']])->getContent();
+            $this->propertyIdentifier = $result ? $result->id() : 'internal_id';
+        }
     }
 
     public function processRow(array $row)
@@ -46,6 +79,7 @@ class PropertyMapping extends AbstractMapping
         }
 
         $dataTypeAdapters = $this->getDataTypeAdapters();
+        $findResourceFromIdentifier = $this->findResourceFromIdentifier;
 
         // Get default option values.
         $globalLanguage = isset($this->args['global_language']) ? $this->args['global_language'] : '';
@@ -99,8 +133,9 @@ class PropertyMapping extends AbstractMapping
                                 break;
 
                             case 'resource':
+                                $identifier = $this->findResource($value, $this->propertyIdentifier);
                                 $valueData = [
-                                    'value_resource_id' => $value,
+                                    'value_resource_id' => $identifier,
                                     'property_id' => $propertyId,
                                     'type' => $type,
                                 ];
@@ -148,5 +183,19 @@ class PropertyMapping extends AbstractMapping
             $dataTypeAdapters[$id] = $configEntry['adapter'];
         }
         return $dataTypeAdapters;
+    }
+
+    protected function findResource($identifier, $propertyIdentifier = 'o:id')
+    {
+        $resourceType = $this->args['resource_type'];
+        $findResourceFromIdentifier = $this->findResourceFromIdentifier;
+        $resourceId = $findResourceFromIdentifier($identifier, $propertyIdentifier, $resourceType);
+        if (empty($resourceId)) {
+            $this->logger->err(new Message('"%s" (%s) is not a valid resource identifier.', // @translate
+                $identifier, $propertyIdentifier));
+            $this->setHasErr(true);
+            return false;
+        }
+        return $resourceId;
     }
 }

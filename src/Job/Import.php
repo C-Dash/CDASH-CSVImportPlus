@@ -157,7 +157,7 @@ class Import extends AbstractJob
         // The main identifier property may be used as term or as id in some
         // places, so prepare it one time only.
         if (empty($args['identifier_property']) || $args['identifier_property'] === 'internal_id') {
-            $this->identifierPropertyId = $args['identifier_property'];
+            $this->identifierPropertyId = 'internal_id';
         } elseif (is_numeric($args['identifier_property'])) {
             $this->identifierPropertyId = (int) $args['identifier_property'];
         } else {
@@ -170,11 +170,11 @@ class Import extends AbstractJob
             $this->rowsByBatch = (int) $args['rows_by_batch'];
         }
 
-        // Force row-at-a-time processing for mixed-resource imports to allow
-        // rows to freely reference data from prior rows
-        if ($this->resourceType === 'resources'
-            && !in_array($args['action'], [self::ACTION_DELETE, self::ACTION_SKIP])
-        ) {
+        // DKM says (with the new liked resource feature,) Note: It is no more possible to import multiple 
+        // rows in batch, since the identifiers are created and checked by row. Maybe a future improvement 
+        // will be to load and check all the csv first.
+        // The core allows batch processes only for deletion.
+        if (!in_array($args['action'], [self::ACTION_DELETE, self::ACTION_SKIP])) {
             $this->rowsByBatch = 1;
         }
 
