@@ -174,7 +174,19 @@ class Import extends AbstractJob
         // rows in batch, since the identifiers are created and checked by row. Maybe a future improvement 
         // will be to load and check all the csv first.
         // The core allows batch processes only for deletion.
-        if (!in_array($args['action'], [self::ACTION_DELETE, self::ACTION_SKIP])) {
+        //
+        //if (!in_array($args['action'], [self::ACTION_DELETE, self::ACTION_SKIP])) {
+        //    $this->rowsByBatch = 1;
+        //}
+
+        // cdash_plus: This is clause from the unmodified code-base. I think that this may be faster 
+        // but will fail if a linked resource is both created and referenced in the same mixed-resource
+        // manifest 
+        // Force row-at-a-time processing for mixed-resource imports to allow
+        // rows to freely reference data from prior rows
+        if ($this->resourceType === 'resources'
+            && !in_array($args['action'], [self::ACTION_DELETE, self::ACTION_SKIP])
+        ) {
             $this->rowsByBatch = 1;
         }
 
