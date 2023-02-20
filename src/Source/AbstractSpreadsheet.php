@@ -53,6 +53,7 @@ abstract class AbstractSpreadsheet extends AbstractSource
         /** @var \OpenSpout\Common\Entity\Row $row */
         foreach ($iterator as $row) {
             if ($row && $row->getNumCells() !== $number) {
+            if ($row && $row->getNumCells() !== $number) {
                 $result = false;
                 break;
             }
@@ -64,6 +65,7 @@ abstract class AbstractSpreadsheet extends AbstractSource
 
     public function countRows()
     {
+        // Reset is required because XmlReader is ahead only.
         // Reset is required because XmlReader is ahead only.
         $this->reset();
         $iterator = $this->getIterator();
@@ -108,6 +110,7 @@ abstract class AbstractSpreadsheet extends AbstractSource
                 continue;
             }
             if ($rowOffset == $this->position) {
+                $rows[] = $this->cleanRow($row->toArray());
                 $rows[] = $this->cleanRow($row->toArray());
                 ++$count;
                 ++$rowOffset;

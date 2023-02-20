@@ -1,5 +1,5 @@
-CSV Import (module for Omeka S)
-===============================
+CSV Import (module for Omeka S) Modified for CDASH 
+==================================================
 
 [CSV Import] is a module for [Omeka S] and will allow users to import Entities from a simple CSV (comma separated value) file, and then map the CSV column data to Entity. Each row in the file represents metadata for a single Entity.
 
@@ -8,6 +8,13 @@ Furthermore, it’s possible to import directly files in formats [TSV] (tab sepa
 Most often, the import will create new Omeka S items. It is also possible to import item sets, media and users, and other modules can add other import types. It’s possible to import mixed resources in one file too.
 
 See the [Omeka S user manual](http://omeka.org/s/docs/user-manual/modules/csvimport/) for user documentation.
+
+CDASH Modifications:
+
+1. When importing Items, a column in the import table may contain references to the DC Identifier of an existing Omeka resource.  This attribute is set using the Column Settings (Wrench tool) to set Data Type to Omeka Resource.  Linking to identifier attributes other than Dublin Core: Identifier can be arranged by adjusting Resource Identifier Properties under the Basic Settings tab. 
+This feature was added by [Daniel-KM](https://github.com/Daniel-KM/Omeka-S-module-CSVImport/tree/feature/identifier_resource)
+
+2. For applications that involve importing multiple batches of items and media, field mappings may be saved as a JSON file and re-loaded. Mappings are set up and tested using the manual mappings form.  Once validated, the JSON array of mappings can be copied from the Job Details report and saved as a local file that can subsequently be loaded via the import form.    
 
 Installation
 ------------

@@ -4,7 +4,7 @@ $escapeHtml = $this->plugin('escapeHtml');
 $this->htmlElement('body')->appendAttribute('class', 'no-section-hashes');
 $this->headStyle()->appendStyle('.inputs input.value-language.active[type="text"] { background-color: #fff; padding: 0 5px; display: inherit; }');
 $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImport'));
-$this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'));
+$this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'), 'text/javascript', ['defer' => 'defer']);
 
 $resourceTypeLabels = [
     'items' => $this->translate('items'),

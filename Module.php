@@ -19,6 +19,13 @@ class Module extends AbstractModule
 
     public function install(ServiceLocatorInterface $serviceLocator)
     {
+        if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
+            $message = new \Omeka\Stdlib\Message(
+                'This module requires dependencies installed by composer, or use the released zip file.' // @translate
+            );
+            throw new \Omeka\Module\Exception\ModuleCannotInstallException($message);
+        }
+
         $connection = $serviceLocator->get('Omeka\Connection');
         $sql = <<<'SQL'
 CREATE TABLE csvimport_import (

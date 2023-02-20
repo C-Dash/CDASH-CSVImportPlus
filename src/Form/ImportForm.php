@@ -64,6 +64,21 @@ class ImportForm extends Form
                 ],
         ]);
 
+        // Added by pbc Load Saved Mappings
+        $this->add([
+            'name' => 'saved_args_file',
+            'type' => 'file',
+            'options' => [
+                'label' => 'Saved Filed mappings, .json', 
+                'info' => 'To save mappings, fill out the mappng form on the next screen to import a batch.  If no errors, copy the JSON array (within the { }) from the job details into a json file.', //@translate
+            ],
+            'attributes' => [
+                'id' => 'saved_mappings',
+                //'required' => 'true',
+            ],
+        ]);
+        // End pbc Load Saved Mappings
+
         // TODO Move the specific parameters into the source class.
 
         // Commenting out code that uses UserSettings in case we want to replace or
@@ -172,9 +187,9 @@ class ImportForm extends Form
     public function extractParameter($value)
     {
         if (strpos($value, '__>') === 0
-            && ($pos = strpos($value, '<__')) == (strlen($value) - 3)
+            && ($pos = mb_strpos($value, '<__')) == (mb_strlen($value) - 3)
         ) {
-            $result = substr($value, 3, $pos - 3);
+            $result = mb_substr($value, 3, $pos - 3);
             return $result === '\r' ? "\r" : $result;
         }
         return $value;

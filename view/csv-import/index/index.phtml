@@ -2,7 +2,7 @@
 $form->prepare();
 $escapeHtml = $this->plugin('escapeHtml');
 $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImport'));
-$this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'));
+$this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'), 'text/javascript', ['defer' => 'defer']);
 ?>
 
 <?php echo $this->pageTitle($this->translate('Import Settings'), 1, $this->translate('CSV Import')); ?>
