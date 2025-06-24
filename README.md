@@ -17,8 +17,9 @@ To save and re-use the import config, go to Past Imports, Click Job Details, and
 
 Installation
 ------------
+Download the Development branch from this repo.  Your module folder needs to be named CSVImport. For reference, you can look at the Omeka team's module.  
 
-See general end user documentation for [Installing a module](http://omeka.org/s/docs/user-manual/modules/#installing-modules).  With this method, start with the zip file from the git releases page. 
+See general end user documentation for [Installing a module](http://omeka.org/s/docs/user-manual/modules/#installing-modules).   
 
 To install CSV Import from the source, go to the root of the module, and run `composer install`. Users
 using the pre-packaged downloads from the Releases page or the omeka.org module directory don't need
